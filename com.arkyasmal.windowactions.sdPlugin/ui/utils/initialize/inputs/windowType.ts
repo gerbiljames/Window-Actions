@@ -4,6 +4,9 @@ type WindowIdTypeClassProps = {
 };
 type WindowUIIdTypeClassProps = {
   streamDeckClient: typeof SDPIComponents.streamDeckClient;
+  dropdownElId: string;
+  textElId: string;
+  idUITypeElId: string;
 };
 /**
  * @description Use to configure the window type
@@ -77,9 +80,15 @@ export class WindowIdTypeClass {
 export class WindowIdUITypeClass {
   private client: typeof SDPIComponents.streamDeckClient;
   public value: WIN_ID_UI_TYPE = WIN_ID_UI_TYPE.TEXT;
+  private idUITypeElId: string;
+  private dropdownElId: string;
+  private textElId: string;
   constructor(props: WindowUIIdTypeClassProps) {
     if (!props.streamDeckClient) throw Error('No streamdeck client attached');
     this.client = props.streamDeckClient;
+    this.dropdownElId = props.dropdownElId;
+    this.textElId = props.textElId;
+    this.idUITypeElId = props.idUITypeElId;
   }
   /**
    * @param e onchange event emitted from select/dropdown input
@@ -87,7 +96,9 @@ export class WindowIdUITypeClass {
    */
   public onChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    this.setUIType(target.value as WIN_ID_UI_TYPE);
+    const currVal = target.value as WIN_ID_UI_TYPE;
+    this.setUIType(currVal);
+    this.changeUIByType(currVal);
   };
   /**
    * @param value value to set
@@ -111,4 +122,35 @@ export class WindowIdUITypeClass {
       this.setUIType(WIN_ID_UI_TYPE.TEXT);
     }
   }
+  public changeUIByType = (val?: WIN_ID_UI_TYPE) => {
+    const currVal = val || this.value;
+    const dropdownEl = document.getElementById(
+      this.dropdownElId
+    ) as HTMLSelectElement | null;
+    const textEl = document.getElementById(
+      this.textElId
+    ) as HTMLInputElement | null;
+    const idUITypeEl = document.getElementById(
+      this.idUITypeElId
+    ) as HTMLInputElement | null;
+    const options = Array.from(
+      idUITypeEl?.children || []
+    ) as HTMLInputElement[];
+    options.forEach((option) => {
+      if (option.value === currVal) option.defaultChecked = true;
+      else option.defaultChecked = false;
+    });
+    switch (currVal) {
+      case WIN_ID_UI_TYPE.DROPDOWN:
+        if (dropdownEl) dropdownEl.style = '';
+        if (textEl) textEl.style = 'display: none;';
+        break;
+      case WIN_ID_UI_TYPE.TEXT:
+        if (dropdownEl) dropdownEl.style = 'display: none';
+        if (textEl) textEl.style = '';
+        break;
+      default:
+        break;
+    }
+  };
 }

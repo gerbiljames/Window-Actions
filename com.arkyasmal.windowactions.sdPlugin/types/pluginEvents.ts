@@ -11,7 +11,7 @@ export enum WIN_ID_UI_TYPE {
 }
 export enum SUB_ACTION_TYPE {
   ACTIVE_WINDOWS = 'com.arkyasmal.windowActions.activeWindows',
-  CURRENT_MONITORS = 'com.arkyasmal.windowActions.onGetMonitorInfo',
+  CURRENT_MONITORS = 'com.arkyasmal.windowActions.getmonitorinfo',
 }
 export type ActiveWindowType = {
   hWnd: string | number;
@@ -36,7 +36,7 @@ export type MonitorType = {
   code?: string | number | null;
   user_name?: string | number | null;
 };
-export type CurrentMonitorPayload = {
+export type AvailableMonitorPayload = {
   action: SUB_ACTION_TYPE.CURRENT_MONITORS;
   result: {
     monitors: MonitorType[];
@@ -44,7 +44,7 @@ export type CurrentMonitorPayload = {
   targetContext: string;
   settings?: Record<string, unknown>;
 };
-export type SubEventPayload = ActiveWindowPayload | CurrentMonitorPayload;
+export type SubEventPayload = ActiveWindowPayload | AvailableMonitorPayload;
 export type PIEventRecievedEvent = {
   action: string;
   context: string;

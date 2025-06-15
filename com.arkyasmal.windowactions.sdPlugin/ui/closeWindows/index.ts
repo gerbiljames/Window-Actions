@@ -5,6 +5,8 @@ import {
   WindowSelectedTextValueClass,
   WindowDropdownOptionsClass,
   windowDropdownElId,
+  windowTextInputElId,
+  windowIdUITypeId,
 } from '../utils';
 const streamDeckClient = SDPIComponents.streamDeckClient;
 /**
@@ -17,6 +19,7 @@ export const WindowDropdownOptions = new WindowDropdownOptionsClass({
 export const WindowSelectedTextValue = new WindowSelectedTextValueClass({
   streamDeckClient: streamDeckClient,
 });
+
 /**
  * Configure window inputs for window type inputs
  */
@@ -25,6 +28,9 @@ export const WindowIdType = new WindowIdTypeClass({
 });
 export const WindowIdUIType = new WindowIdUITypeClass({
   streamDeckClient: streamDeckClient,
+  dropdownElId: windowDropdownElId,
+  textElId: windowTextInputElId,
+  idUITypeElId: windowIdUITypeId,
 });
 
 const config = {
@@ -36,7 +42,7 @@ const config = {
  * Subscribe to changes in window type
  */
 WindowIdType.subscribeOnChange(WindowDropdownOptions.changeOptionsByWinIdType);
-WindowIdType.subscribeOnChange(WindowIdUIType.detectWindowTypeChange)
+WindowIdType.subscribeOnChange(WindowIdUIType.detectWindowTypeChange);
 /**
  * Recieve events from plugin
  */
@@ -47,4 +53,5 @@ streamDeckClient.sendToPropertyInspector.subscribe(listenToEvents(config));
 document.addEventListener('DOMContentLoaded', function () {
   //initalize options stored inside
   WindowDropdownOptions.replaceOptions();
+  WindowIdUIType.changeUIByType();
 });

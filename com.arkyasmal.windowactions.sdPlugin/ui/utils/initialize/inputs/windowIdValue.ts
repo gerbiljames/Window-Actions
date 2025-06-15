@@ -1,6 +1,7 @@
 import {
   ActiveWindowPayload,
   ActiveWindowType,
+  SUB_ACTION_TYPE,
   WIN_ID_TYPE,
   WIN_ID_UI_TYPE,
 } from '@/types/pluginEvents';
@@ -18,7 +19,6 @@ export class WindowDropdownOptionsClass {
   private dropdownElId: string;
   public activeWindowData: ActiveWindowType[] = [];
   public options: HTMLOptionElement[] = [];
-  public selectedValue: string | null = null;
   constructor(props: WindowDropdownOptionsProps) {
     if (!props.streamDeckClient) throw Error('No streamdeck client attached');
     this.client = props.streamDeckClient;
@@ -34,7 +34,7 @@ export class WindowDropdownOptionsClass {
    */
   public fetchActiveWindows = async (e?: Event) => {
     await this.client.send('sendToPlugin', {
-      action: 'com.arkyasmal.windowActions.onActiveWindows',
+      action: SUB_ACTION_TYPE.ACTIVE_WINDOWS,
     });
   };
   /**
@@ -109,8 +109,8 @@ export class WindowSelectedTextValueClass {
         //new support
         payload?.settings?.window_id_settings?.window_id_text_value ||
         //legacy support
-        payload?.settings?.value?.name ||
-        payload?.settings?.name;
+        (payload?.settings?.value?.name as string) ||
+        (payload?.settings?.name as string);
       if (!potentialValue) this.value = potentialValue as string;
       else this.setWindowIdValue(null);
     });

@@ -24,11 +24,21 @@
       </select>
     </sdpi-item>
     <sdpi-item label="Identifer">
-      <div style="display: flex; ">
-        <input type="radio" name="identifer_input_type" value="dropdown" id="identifer_dropdown_type"
-        onchange="WindowActions.WindowIdUIType.onChange(event)"
-        >Dropdown</input>
-        <input type="radio" name="identifer_input_type" value="text" id="identifer_text_type">Custom</input>
+      <div style="display: flex" id="identifer_ui_input_type">
+        <input
+          type="radio"
+          name="identifer_input_type"
+          value="dropdown"
+          id="identifer_input_type_dropdown"
+          onchange="WindowActions.WindowIdUIType.onChange(event)"
+        /><label for="identifer_input_type_dropdown">Dropdown</label>
+        <input
+          type="radio"
+          name="identifer_input_type"
+          value="text"
+          id="identifer_input_type_text"
+          onchange="WindowActions.WindowIdUIType.onChange(event)"
+        /><label for="identifer_input_type_text">Custom</label>
       </div>
       <br />
       <select
@@ -39,13 +49,12 @@
       >
         <option value="" disabled selected>--Select Identifer--</option>
       </select>
-      <br />
-      <br />
       <input
-        name="identifer_text"
-        id="identifer_text"
+        name="identifier_text"
+        id="identifier_text"
         placeholder="Enter Window or Program Identifer/Name"
         required
+        type="text"
         onchange="WindowActions.WindowSelectedTextValue.onChange(event)"
       />
     </sdpi-item>
