@@ -5,16 +5,14 @@
     <meta charset="utf-8" />
     <script src="https://sdpi-components.dev/releases/v4/sdpi-components.js"></script>
     <script type="module" src="./index.js"></script>
-    <link
-      rel="stylesheet"
-      href="./index.css"
-    />
+    <link rel="stylesheet" href="./index.css" />
   </head>
   <body>
     <sdpi-item label="Identifer Type">
       <select
         id="select_win_type"
         onchange="WindowActions.WindowIdType.onChange(event)"
+        class="window-dropdown-select-container"
       >
         <option value="program_name" selected>Program Name (.exe file)</option>
         <option value="win_title">Exact Window Title</option>
@@ -24,7 +22,7 @@
       </select>
     </sdpi-item>
     <sdpi-item label="Identifer">
-      <div style="display: flex" id="identifer_ui_input_type">
+      <div id="identifer_ui_input_type">
         <input
           type="radio"
           name="identifer_input_type"
@@ -44,6 +42,7 @@
       <select
         name="identifier_dropdown"
         id="identifier_dropdown"
+        class="window-dropdown-select-container"
         onchange="WindowActions.WindowSelectedTextValue.onChange(event)"
         onload="WindowActions.WindowDropdownOptions.fetchActiveWindows(event)"
       >
