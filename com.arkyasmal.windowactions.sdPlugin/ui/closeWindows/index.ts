@@ -33,19 +33,23 @@ export const WindowIdUIType = new WindowIdUITypeClass({
   idUITypeElId: windowIdUITypeId,
 });
 
+/**
+ * Subscribe to changes in window type
+ */
+WindowIdType.subscribeOnChange(
+  WindowDropdownOptions.changeOptionsByWinIdType.bind(WindowDropdownOptions)
+);
+WindowIdType.subscribeOnChange(
+  WindowIdUIType.detectWindowTypeChange.bind(WindowIdUIType)
+);
+/**
+ * Recieve events from plugin
+ */
 const config = {
   WindowDropdownOptions: WindowDropdownOptions,
   WindowIdType: WindowIdType,
   WindowSelectedTextValue: WindowSelectedTextValue,
 };
-/**
- * Subscribe to changes in window type
- */
-WindowIdType.subscribeOnChange(WindowDropdownOptions.changeOptionsByWinIdType);
-WindowIdType.subscribeOnChange(WindowIdUIType.detectWindowTypeChange);
-/**
- * Recieve events from plugin
- */
 streamDeckClient.sendToPropertyInspector.subscribe(listenToEvents(config));
 /**
  * Run initalization code when the DOM loads

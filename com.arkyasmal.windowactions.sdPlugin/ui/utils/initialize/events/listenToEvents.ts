@@ -23,10 +23,10 @@ export const listenToEvents =
     const { payload } = event;
     const { action } = payload;
     switch (action) {
-      case SUB_ACTION_TYPE.ACTIVE_WINDOWS:
+      case SUB_ACTION_TYPE.RECIEVE_ACTIVE_WINDOWS:
         WindowDropdownOptions.recieveActiveWindowsEvent(payload);
         break;
-      case SUB_ACTION_TYPE.CURRENT_MONITORS:
+      case SUB_ACTION_TYPE.RECIEVE_CURRENT_MONITORS:
         if (MonitorDropdownOptions)
           MonitorDropdownOptions.recieveAvailableMonitorsEvent(payload);
         break;

@@ -10,8 +10,10 @@ export enum WIN_ID_UI_TYPE {
   TEXT = 'text',
 }
 export enum SUB_ACTION_TYPE {
-  ACTIVE_WINDOWS = 'com.arkyasmal.windowActions.activeWindows',
-  CURRENT_MONITORS = 'com.arkyasmal.windowActions.getmonitorinfo',
+  GET_ACTIVE_WINDOWS = 'com.arkyasmal.windowActions.onActiveWindows',
+  GET_CURRENT_MONITORS = 'com.arkyasmal.windowActions.onGetMonitorInfo',
+  RECIEVE_ACTIVE_WINDOWS = 'com.arkyasmal.windowActions.getactivewindows',
+  RECIEVE_CURRENT_MONITORS = 'com.arkyasmal.windowActions.getmonitorinfo',
 }
 export type ActiveWindowType = {
   hWnd: string | number;
@@ -21,7 +23,7 @@ export type ActiveWindowType = {
   win_class: string;
 };
 export type ActiveWindowPayload = {
-  action: SUB_ACTION_TYPE.ACTIVE_WINDOWS;
+  action: SUB_ACTION_TYPE.RECIEVE_ACTIVE_WINDOWS;
   result: {
     windows: ActiveWindowType[];
   };
@@ -37,7 +39,7 @@ export type MonitorType = {
   user_name?: string | number | null;
 };
 export type AvailableMonitorPayload = {
-  action: SUB_ACTION_TYPE.CURRENT_MONITORS;
+  action: SUB_ACTION_TYPE.RECIEVE_CURRENT_MONITORS;
   result: {
     monitors: MonitorType[];
   };

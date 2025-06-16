@@ -72,6 +72,21 @@ const config: Configuration = {
               ),
             };
           }),
+        ...actionDirectories
+          .filter((dir) => {
+            return fs.existsSync(path.resolve(dir, 'index.css'));
+          })
+          .map((dir) => {
+            return {
+              from: path.resolve(dir, 'index.css'),
+              to: path.resolve(
+                __dirname,
+                `dist/${pluginName}/ui`,
+                path.basename(dir),
+                'index.css'
+              ),
+            };
+          }),
       ],
     }),
   ],

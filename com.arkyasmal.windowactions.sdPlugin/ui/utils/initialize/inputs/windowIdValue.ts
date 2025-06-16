@@ -34,7 +34,7 @@ export class WindowDropdownOptionsClass {
    */
   public fetchActiveWindows = async (e?: Event) => {
     await this.client.send('sendToPlugin', {
-      action: SUB_ACTION_TYPE.ACTIVE_WINDOWS,
+      action: SUB_ACTION_TYPE.GET_ACTIVE_WINDOWS,
     });
   };
   /**

@@ -118,8 +118,7 @@ export class WindowIdUITypeClass {
     const isTitle = isNewValueTitle && isOldValueTitle;
     if (!isTitle && newValue !== oldValue) {
       this.setUIType(WIN_ID_UI_TYPE.DROPDOWN);
-    } else {
-      this.setUIType(WIN_ID_UI_TYPE.TEXT);
+      this.changeUIByType(WIN_ID_UI_TYPE.DROPDOWN);
     }
   }
   public changeUIByType = (val?: WIN_ID_UI_TYPE) => {
@@ -137,8 +136,8 @@ export class WindowIdUITypeClass {
       idUITypeEl?.children || []
     ) as HTMLInputElement[];
     options.forEach((option) => {
-      if (option.value === currVal) option.defaultChecked = true;
-      else option.defaultChecked = false;
+      if (option.value === currVal) option.checked = true;
+      else option.checked = false;
     });
     switch (currVal) {
       case WIN_ID_UI_TYPE.DROPDOWN:

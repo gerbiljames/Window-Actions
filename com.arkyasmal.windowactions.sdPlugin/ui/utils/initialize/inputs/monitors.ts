@@ -75,7 +75,7 @@ export class MonitorDropdownOptionsClass {
    */
   public fetchAvailableMonitors = async (e?: Event) => {
     await this.client.send('sendToPlugin', {
-      action: SUB_ACTION_TYPE.CURRENT_MONITORS,
+      action: SUB_ACTION_TYPE.GET_CURRENT_MONITORS,
     });
   };
   /**
