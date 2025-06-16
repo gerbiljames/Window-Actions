@@ -104,7 +104,6 @@ export class WindowIdUITypeClass {
    * @param value value to set
    */
   public setUIType(value: WIN_ID_UI_TYPE) {
-    if (!this.client) throw Error('No streamdeck client attached');
     this.value = value;
   }
   public detectWindowTypeChange(newValue: WIN_ID_TYPE, oldValue?: WIN_ID_TYPE) {
@@ -123,6 +122,7 @@ export class WindowIdUITypeClass {
   }
   public changeUIByType = (val?: WIN_ID_UI_TYPE) => {
     const currVal = val || this.value;
+    if (currVal !== this.value) this.setUIType(currVal);
     const dropdownEl = document.getElementById(
       this.dropdownElId
     ) as HTMLSelectElement | null;

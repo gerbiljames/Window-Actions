@@ -18,6 +18,7 @@ export const WindowDropdownOptions = new WindowDropdownOptionsClass({
 });
 export const WindowSelectedTextValue = new WindowSelectedTextValueClass({
   streamDeckClient: streamDeckClient,
+  textElId: windowTextInputElId,
 });
 
 /**
@@ -58,4 +59,5 @@ document.addEventListener('DOMContentLoaded', function () {
   //initalize options stored inside
   WindowDropdownOptions.replaceOptions();
   WindowIdUIType.changeUIByType();
+  WindowSelectedTextValue.changeUIByValue();
 });

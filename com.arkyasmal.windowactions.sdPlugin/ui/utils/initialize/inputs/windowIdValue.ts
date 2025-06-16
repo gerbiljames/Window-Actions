@@ -3,7 +3,6 @@ import {
   ActiveWindowType,
   SUB_ACTION_TYPE,
   WIN_ID_TYPE,
-  WIN_ID_UI_TYPE,
 } from '@/types/pluginEvents';
 import { createOption, removeAllOptions } from '../..';
 
@@ -13,6 +12,7 @@ type WindowDropdownOptionsProps = {
 };
 type WindowSelectedTextValueProps = {
   streamDeckClient: typeof SDPIComponents.streamDeckClient;
+  textElId: string;
 };
 export class WindowDropdownOptionsClass {
   private client: typeof SDPIComponents.streamDeckClient;
@@ -100,10 +100,12 @@ export class WindowDropdownOptionsClass {
  */
 export class WindowSelectedTextValueClass {
   private client: typeof SDPIComponents.streamDeckClient;
-  public value: string | number | null = null;
+  private textElId: string;
+  public value: string | null = null;
   constructor(props: WindowSelectedTextValueProps) {
     if (!props.streamDeckClient) throw Error('No streamdeck client attached');
     this.client = props.streamDeckClient;
+    this.textElId = props.textElId;
     this.client.getSettings().then((payload) => {
       const potentialValue =
         //new support
@@ -111,8 +113,9 @@ export class WindowSelectedTextValueClass {
         //legacy support
         (payload?.settings?.value?.name as string) ||
         (payload?.settings?.name as string);
-      if (!potentialValue) this.value = potentialValue as string;
+      if (potentialValue) this.value = potentialValue as string;
       else this.setWindowIdValue(null);
+      this.changeUIByValue();
     });
   }
   /**
@@ -121,7 +124,9 @@ export class WindowSelectedTextValueClass {
    */
   public onChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    this.setWindowIdValue(target.value as WIN_ID_UI_TYPE);
+    const value = target.value;
+    this.setValueAsSetting(value);
+    this.changeUIByValue(value);
   };
   /**
    * @param value value to set
@@ -141,5 +146,12 @@ export class WindowSelectedTextValueClass {
       },
     };
     this.client.setSettings(newSettings);
+  };
+  public changeUIByValue = (value?: string) => {
+    const newValue = value || this.value;
+    if (this.value !== newValue) this.value = newValue;
+    const textEl = document.getElementById(this.textElId) as HTMLInputElement;
+    if (!textEl) return;
+    if (newValue) textEl.value = newValue;
   };
 }
