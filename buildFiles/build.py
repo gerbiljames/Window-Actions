@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 import shutil
 from install import install_requirements
@@ -12,8 +13,9 @@ def create_dist_directory(curr_dir: str):
         curr_dir, r'..\Sources\com.arkyasmal.windowactions.sdPlugin\app\windowsScripts\dist')))
     setup_dir = os.path.normpath(os.path.abspath(os.path.join(
         curr_dir, r'..\Sources\com.arkyasmal.windowactions.sdPlugin\app\windowsScripts')))
-    # Build the setup.py using py
-    subprocess.run(['py', 'setup.py', 'build'], cwd=setup_dir)
+    # Build setup.py using the current interpreter so the bundled env (uv,
+    # venv, py launcher, etc.) matches the parent process.
+    subprocess.run([sys.executable, 'setup.py', 'build'], cwd=setup_dir, check=True)
     # Remove the dist directory
     try:
         shutil.rmtree(new_dist_path)
@@ -51,7 +53,7 @@ def create_release_file(
     # Run DistributionTool
     dist_path = os.path.join(releasePath, "DistributionTool.exe")
     command = [dist_path, "-b", "-i", buildPluginPath, "-o", releasePath]
-    subprocess.run(command, shell=False, cwd=releasePath)
+    subprocess.run(command, shell=False, cwd=releasePath, check=True)
 
 
 if __name__ == '__main__':
