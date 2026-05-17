@@ -9,7 +9,10 @@ import psutil
 
 
 def get_window_info(hwnd: int | str):
-    window_text = win32gui.GetWindowText(int(hwnd))
+    try:
+        window_text = win32gui.GetWindowText(int(hwnd))
+    except Exception:
+        return None
     if window_text:
         return {'_hWnd': hwnd, 'title': window_text}
     else:
@@ -25,11 +28,18 @@ def get_all_windows():
         ctypes.c_bool, ctypes.c_int, ctypes.POINTER(ctypes.c_int))
     isWindowVisible = ctypes.windll.user32.IsWindowVisible
 
+    # Must never raise: this runs as a C callback inside EnumWindows, and an
+    # exception escaping through ctypes leaves the enumeration in an undefined
+    # state (and can drop the whole window list).
     def foreach_window(hWnd: str | int, lParam):
-        if isWindowVisible(hWnd) != 0:
-            windowInfo = get_window_info(int(hWnd))
-            if windowInfo != None:
-                windowObjs.append(windowInfo)
+        try:
+            if isWindowVisible(hWnd) != 0:
+                windowInfo = get_window_info(int(hWnd))
+                if windowInfo != None:
+                    windowObjs.append(windowInfo)
+        except Exception:
+            pass
+        return True
     enumWindows(enumWindowsProc(foreach_window), 0)
     return windowObjs
 
@@ -40,9 +50,16 @@ def get_all_process():
     return processes
 
 
+def _safe_class_name(hwnd):
+    try:
+        return win32gui.GetClassName(hwnd)
+    except Exception:
+        return ""
+
+
 def get_window_class_names(active_win_data, filter_dup=False):
     win_class_names = [
-        {**x, "win_class": win32gui.GetClassName(x["hWnd"])} for x in active_win_data]
+        {**x, "win_class": _safe_class_name(x["hWnd"])} for x in active_win_data]
     new_map = {}
     new_data = []
     if filter_dup:
@@ -67,13 +84,15 @@ def get_active_windows(
         process_map[pid] = x
     # get all active windows
     windows = get_all_windows()
-    windows_data = [
-        {
-            "hWnd": int(x["_hWnd"]), "title": x['title'],
-            "pid": win32process.GetWindowThreadProcessId(x["_hWnd"])
-        }
-        for x in windows
-    ]
+    windows_data = []
+    for x in windows:
+        try:
+            pid = win32process.GetWindowThreadProcessId(x["_hWnd"])
+        except Exception:
+            continue
+        windows_data.append({
+            "hWnd": int(x["_hWnd"]), "title": x['title'], "pid": pid,
+        })
     new_data = list(filter(lambda x: len(x["title"]) > 0, windows_data))
 
     for i in range(0, len(new_data)):

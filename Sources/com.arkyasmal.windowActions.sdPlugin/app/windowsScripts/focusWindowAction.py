@@ -22,22 +22,36 @@ def focus_single_window(hwnd: int | str ):
         print(e)
     if foregroundWindowHandle == hwnd:
         return hwnd
+    # Synthesize an ALT key press so Windows considers our process to have
+    # just received input. Without this, SetForegroundWindow silently fails
+    # on subsequent calls (the "works once, then needs a restart" symptom).
+    try:
+        user32.keybd_event(win32con.VK_MENU, 0, 0, 0)
+        user32.keybd_event(win32con.VK_MENU, 0, win32con.KEYEVENTF_KEYUP, 0)
+    except Exception as e:
+        print(e)
     currentThreadId = GetCurrentThreadId()
     foregroundThreadId = GetWindowThreadProcessId(foregroundWindowHandle)[0]
+    attached = False
+    if currentThreadId != foregroundThreadId:
+        try:
+            AttachThreadInput(currentThreadId, foregroundThreadId, True)
+            attached = True
+        except Exception as e:
+            print(e)
     try:
-        AttachThreadInput(currentThreadId, foregroundThreadId, True)
-    except Exception as e:
-        print(e)
-    BringWindowToTop(hwnd)
-    ShowWindow(hwnd, win32con.SW_SHOW)
-    SetWindowPos(hwnd, win32con.HWND_NOTOPMOST, 0, 0, 0, 0,
-                 win32con.SWP_SHOWWINDOW | win32con.SWP_NOSIZE | win32con.SWP_NOMOVE)
-    SetActiveWindow(hwnd)
-    SetForegroundWindow(hwnd)
-    try:
-        AttachThreadInput(currentThreadId, foregroundThreadId, False)
-    except Exception as e:
-        print(e)
+        BringWindowToTop(hwnd)
+        ShowWindow(hwnd, win32con.SW_SHOW)
+        SetWindowPos(hwnd, win32con.HWND_NOTOPMOST, 0, 0, 0, 0,
+                     win32con.SWP_SHOWWINDOW | win32con.SWP_NOSIZE | win32con.SWP_NOMOVE)
+        SetActiveWindow(hwnd)
+        SetForegroundWindow(hwnd)
+    finally:
+        if attached:
+            try:
+                AttachThreadInput(currentThreadId, foregroundThreadId, False)
+            except Exception as e:
+                print(e)
     if user32.IsZoomed(hwnd):
         ShowWindow(hwnd, win32con.SW_SHOWMAXIMIZED)
     else:
