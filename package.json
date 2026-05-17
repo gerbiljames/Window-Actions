@@ -1,6 +1,6 @@
 {
   "name": "window-actions",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "description": "Minimize windows from command line",
   "main": "./Sources/com.arkyasmal.windowActions.sdPlugin/app/index.js",
   "scripts": {
